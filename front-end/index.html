@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBDmE</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<main>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div class="container">
+    <h2>OBDmE Diagnostic Translator</h2>
+
+    <input type="text" id="code" placeholder="Enter OBD Code (e.g. P0420)">
+    <input type="text" id="car" placeholder="Enter Vehicle (e.g. 2015 Toyota Camry)">
+
+    <button onclick="analyze()">Analyze</button>
+
+    <div id="result" class="hidden">
+      <h3 id="issue"></h3>
+      <p id="explanation"></p>
+
+      <h4>Next Steps:</h4>
+      <ul id="steps"></ul>
+
+      <h4>Recommended Shops:</h4>
+      <ul id="shops"></ul>
+    </div>
+  </div>
+</main>
+
+<script src="obd.js"></script>
+
+</body>
+</html>

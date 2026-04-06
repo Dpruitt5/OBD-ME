@@ -13,7 +13,42 @@ const { loadCSV } = require("./dataLoader");
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+// ---------------------------------------------------------
+// Helper Functions
+// ---------------------------------------------------------
+function normalizeOBDCode(rawCode) {
+  if (!rawCode || typeof rawCode !== "string") return null;
 
+  // Remove spaces and make uppercase
+  let cleaned = rawCode.trim().toUpperCase();
+
+  // Remove any spaces inside (e.g. "P 0420" → "P0420")
+  cleaned = cleaned.replace(/\s+/g, "");
+
+  // Case 1: User enters just 4 digits assume "P"
+  if (/^\d{4}$/.test(cleaned)) {
+    return `P${cleaned}`;
+  }
+
+  // Case 2: User enters valid full code
+  if (/^[PBCU]\d{4}$/.test(cleaned)) {
+    return cleaned;
+  }
+
+  // Case 3: User enters something like "0420P"  fix order
+  if (/^\d{4}[PBCU]$/.test(cleaned)) {
+    return `${cleaned.slice(-1)}${cleaned.slice(0, 4)}`;
+  }
+
+  // Case 4: Extract from messy input like "code: p0420"
+  const match = cleaned.match(/[PBCU]?\d{4}/);
+  if (match) {
+    const code = match[0];
+    return code.length === 4 ? `P${code}` : code;
+  }
+
+  return null;
+}
 // ---------------------------------------------------------
 // Middleware Setup
 // ---------------------------------------------------------
@@ -66,7 +101,8 @@ app.get("/", (req, res) => {
 app.get("/api/code/:code", (req, res) => {
   // Pull the code from the URL and normalize it to uppercase
   // so "p0420", "P0420", and "p0420" all work the same way.
-  const inputCode = req.params.code.trim().toUpperCase();
+  //const inputCode = req.params.code.trim().toUpperCase();
+  const inputCode = normalizeOBDCode(req.params.code);
 
   // Validate the format — OBD-II codes are 1 letter + 4 digits.
   const validFormat = /^[PBCU]\d{4}$/.test(inputCode);
@@ -111,7 +147,8 @@ app.post("/api/code", (req, res) => {
     });
   }
 
-  const inputCode = code.trim().toUpperCase();
+  //const inputCode = code.trim().toUpperCase();
+  const inputCode = normalizeOBDCode(code);
 
   // Same format validation as the GET route.
   const validFormat = /^[PBCU]\d{4}$/.test(inputCode);

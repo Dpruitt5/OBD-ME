@@ -77,7 +77,7 @@ let codeDatabase = {};
  * Health check — confirms the server is running.
  * The frontend or professor can hit this to verify deployment.
  */
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.json({
     status: "running",
     message: "Honda OBD Lookup API is live.",
@@ -88,7 +88,6 @@ app.get("/", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
 /**
  * GET /api/code/:code
  * Look up a single OBD code passed as a URL parameter.

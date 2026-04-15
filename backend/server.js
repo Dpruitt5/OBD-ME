@@ -1,4 +1,3 @@
-require('dotenv').config();
 
 // ============================================================
 // server.js — OBD Code Lookup Backend (Node.js + Express)
